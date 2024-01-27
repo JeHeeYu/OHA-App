@@ -7,6 +7,7 @@ import 'package:oha/statics/colors.dart';
 import 'package:oha/statics/images.dart';
 import 'package:oha/statics/strings.dart';
 import 'package:oha/view/pages/home/weather_register_page.dart';
+import 'package:oha/view/pages/login_page.dart';
 
 class NowWeatherTab extends StatefulWidget {
   const NowWeatherTab({super.key});
@@ -111,7 +112,7 @@ class _NowWeatherTabState extends State<NowWeatherTab> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const WeatherRegisterPage()),
+                      builder: (context) => const LoginPage()),
                 );
               },
               child: Stack(

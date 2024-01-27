@@ -39,6 +39,9 @@ dependencies:
   flutter_screenutil: ^5.7.0
   http: ^0.13.6
   kakao_flutter_sdk: ^1.8.0
+  url_launcher: ^6.2.4
+  flutter_inappwebview: ^5.8.0
+  fk_user_agent: ^2.1.0
 
 dev_dependencies:
   flutter_test:
