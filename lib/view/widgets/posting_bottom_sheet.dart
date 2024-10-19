@@ -5,6 +5,7 @@ import 'package:oha/view/pages/upload/upload_write_page.dart';
 import 'package:oha/view/widgets/complete_dialog.dart';
 import 'package:oha/view/widgets/feed_widget.dart';
 import 'package:oha/view/widgets/four_more_dialog.dart';
+import 'package:oha/view/widgets/more_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../../models/upload/upload_get_model.dart';
 import '../../../view_model/upload_view_model.dart';
@@ -59,17 +60,35 @@ class PostingBottomSheet {
                         padding:
                             EdgeInsets.only(top: ScreenUtil().setHeight(12.0)),
                         child: FeedWidget(
-                          uploadData: data,
-                          onLikePressed: () => _onLikePressed(context,
-                              data.postId, data.isLike, _uploadViewModel),
-                          onMorePressed: () => FourMoreDialog.show(
-                              context,
-                              (action) => _onMorePressed(context, data.postId,
-                                  action, data, _uploadViewModel),
-                              data.isOwn,
-                              data.files.isNotEmpty ? data.files[0].url : '',
-                              data.postId),
-                        ),
+                            uploadData: data,
+                            onLikePressed: () => _onLikePressed(context,
+                                data.postId, data.isLike, _uploadViewModel),
+                            onMorePressed: () {
+                              if (data.isOwn) {
+                                FourMoreDialog.show(
+                                  context,
+                                  (action) => _onMorePressed(
+                                      context,
+                                      data.postId,
+                                      action,
+                                      data,
+                                      _uploadViewModel),
+                                  data.isOwn,
+                                  data.files.isNotEmpty
+                                      ? data.files[0].url
+                                      : '',
+                                  data.postId,
+                                );
+                              } else {
+                                MoreDialog.show(
+                                  context,
+                                  data.files.isNotEmpty
+                                      ? data.files[0].url
+                                      : '',
+                                  data.postId,
+                                );
+                              }
+                            }),
                       );
                     },
                   ),

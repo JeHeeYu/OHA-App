@@ -7,6 +7,7 @@ import 'package:oha/statics/images.dart';
 import 'package:oha/statics/strings.dart';
 import 'package:oha/view/pages/upload/upload_write_page.dart';
 import 'package:oha/view/widgets/diary_bottom_sheet.dart';
+import 'package:oha/view/widgets/more_dialog.dart';
 import 'package:oha/view/widgets/posting_bottom_sheet.dart';
 import 'package:oha/view_model/diary_view_model.dart';
 import 'package:oha/view_model/upload_view_model.dart';
@@ -37,14 +38,12 @@ class _DiaryPageState extends State<DiaryPage> {
   DateTime currentTime = DateTime.now();
   bool viewMonth = true;
   bool showFeed = false;
-  VoidCallback? _retryCallback;
+  VoidCallback? retryCallback;
   late DiaryViewModel _diaryViewModel;
   late UploadViewModel _uploadViewModel;
   DateTime selectedDate = DateTime.now();
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
-  int _offset = 0;
-  final int _pageSize = 10;
   bool _isLoading = false;
   bool _didLoadData = false;
 
@@ -68,9 +67,7 @@ class _DiaryPageState extends State<DiaryPage> {
       Future.microtask(() {
         _uploadViewModel.clearUserUploadGetData();
         if (mounted) {
-          setState(() {
-            // UI 상태를 업데이트
-          });
+          setState(() {});
         }
       });
     }
@@ -98,19 +95,19 @@ class _DiaryPageState extends State<DiaryPage> {
   Future<void> _fetchData() async {
     try {
       await _diaryViewModel.fetchMyDiary().then((_) {
-        _retryCallback = null;
+        retryCallback = null;
       }).catchError((error) {
-        _retryCallback = () => _diaryViewModel.fetchMyDiary();
+        retryCallback = () => _diaryViewModel.fetchMyDiary();
       });
 
       await _uploadViewModel.myPosts().then((_) {
-        _retryCallback = null;
+        retryCallback = null;
       }).catchError((error) {
-        _retryCallback = () => _uploadViewModel.myPosts();
+        retryCallback = () => _uploadViewModel.myPosts();
       });
       _uploadViewModel.clearMyUploadGetData();
     } catch (error) {
-      _retryCallback = () {
+      retryCallback = () {
         _diaryViewModel.fetchMyDiary();
         _uploadViewModel.myPosts();
       };
@@ -125,12 +122,12 @@ class _DiaryPageState extends State<DiaryPage> {
     try {
       await _diaryViewModel.fetchUserDiary(userId);
       await _uploadViewModel.userPosts(userId).then((_) {
-        _retryCallback = null;
+        retryCallback = null;
       }).catchError((error) {
-        _retryCallback = () => _uploadViewModel.userPosts(userId);
+        retryCallback = () => _uploadViewModel.userPosts(userId);
       });
     } catch (error) {
-      _retryCallback = () {
+      retryCallback = () {
         _uploadViewModel.userPosts(userId);
       };
     } finally {
@@ -144,13 +141,6 @@ class _DiaryPageState extends State<DiaryPage> {
     setState(() {
       _isLoadingMore = true;
     });
-
-    _offset += _pageSize;
-
-    Map<String, dynamic> sendData = {
-      "offset": _offset.toString(),
-      "size": _pageSize.toString(),
-    };
 
     try {
       if (widget.userId != null) {
@@ -202,17 +192,21 @@ class _DiaryPageState extends State<DiaryPage> {
   }
 
   void _showDiaryBottomSheet(BuildContext context, DateTime selectedDate) {
-    final diariesOnSelectedDate =
-        _diaryViewModel.getDiariesByDate(selectedDate);
+    final diariesOnSelectedDate = _diaryViewModel.getDiariesByDate(
+      selectedDate,
+      isUserDiary: widget.userId != null,
+    );
 
     if (diariesOnSelectedDate.isNotEmpty) {
       DiaryBottomSheet.show(
-        context,
-        MyDiaryData(
-          writer: _diaryViewModel.getMyDiary.data?.data?.writer,
-          diaries: diariesOnSelectedDate,
-        ),
-      );
+          context,
+          MyDiaryData(
+            writer: widget.userId == null
+                ? _diaryViewModel.getMyDiary.data?.data?.writer
+                : _diaryViewModel.getUserDiary.data?.data?.writer,
+            diaries: diariesOnSelectedDate,
+          ),
+          widget.userId);
     }
   }
 
@@ -612,15 +606,26 @@ class _DiaryPageState extends State<DiaryPage> {
             child: ButtonIcon(
               icon: Icons.more_horiz,
               iconColor: const Color(UserColors.ui06),
-              callback: () => FourMoreDialog.show(
-                context,
-                (action) => _onMorePressed(upload.postId, action, null, upload),
-                true,
-                upload.thumbnailUrl ?? '',
-                upload.postId,
-              ),
+              callback: () {
+                if (widget.userId != null) {
+                  MoreDialog.show(
+                    context,
+                    upload.thumbnailUrl,
+                    upload.postId,
+                  );
+                } else {
+                  FourMoreDialog.show(
+                    context,
+                    (action) =>
+                        _onMorePressed(upload.postId, action, null, upload),
+                    true,
+                    upload.thumbnailUrl,
+                    upload.postId,
+                  );
+                }
+              },
             ),
-          ),
+          )
         ],
       ),
     );
@@ -638,16 +643,20 @@ class _DiaryPageState extends State<DiaryPage> {
             fontSize: 16,
           ),
         ),
-        ButtonIcon(
-          icon: Icons.add,
-          iconColor: const Color(UserColors.ui04),
-          callback: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DiaryRegisterPage(selectDate: selectedDate),
-            ),
-          ),
-        ),
+        (widget.userId == null)
+            ? ButtonIcon(
+                icon: Icons.add,
+                iconColor: const Color(UserColors.ui04),
+                callback: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DiaryRegisterPage(selectDate: selectedDate),
+                    ),
+                  );
+                })
+            : Container(),
       ],
     );
   }
@@ -656,6 +665,7 @@ class _DiaryPageState extends State<DiaryPage> {
     return GestureDetector(
       onTap: () {
         if (diary != null) {
+          print("JEhee ${diary}");
           _showDiaryBottomSheet(context, selectedDate);
         }
       },

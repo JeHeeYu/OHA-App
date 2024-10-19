@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oha/view/pages/diary/diary_register_page.dart';
 import 'package:oha/view/widgets/delete_dialog.dart';
-import 'package:oha/view/pages/upload/upload_write_page.dart';
 import 'package:oha/view/widgets/complete_dialog.dart';
 import 'package:oha/view/widgets/diary_feed_widget.dart';
 import 'package:oha/view/widgets/four_more_dialog.dart';
+import 'package:oha/view/widgets/more_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../../models/diary/my_diary_model.dart';
 import '../../../view_model/diary_view_model.dart';
@@ -26,7 +26,7 @@ class DiaryBottomSheet {
     );
   }
 
-  static void show(BuildContext context, MyDiaryData diaryData) {
+  static void show(BuildContext context, MyDiaryData diaryData, int? userId) {
     final DiaryViewModel _diaryViewModel =
         Provider.of<DiaryViewModel>(context, listen: false);
 
@@ -60,32 +60,47 @@ class DiaryBottomSheet {
                         padding:
                             EdgeInsets.only(top: ScreenUtil().setHeight(12.0)),
                         child: DiaryFeedWidget(
-                          diaryData: diary,
-                          writerData: diaryData.writer!,
-                          onLikePressed: () => _onLikePressed(
-                            context,
-                            diary.diaryId,
-                            diary.likes,
-                            _diaryViewModel,
-                          ),
-                          showLine: index < (diaryData.diaries!.length - 1),
-                          onMorePressed: () => FourMoreDialog.show(
-                            context,
-                            (action) => _onMorePressed(
-                              context,
-                              diary.diaryId,
-                              action,
-                              diary,
-                              _diaryViewModel,
-                            ),
-                            true,
-                            (diary.fileRelation != null &&
-                                    diary.fileRelation!.isNotEmpty)
-                                ? diary.fileRelation![0].fileUrl
-                                : '',
-                            diary.diaryId,
-                          ),
-                        ),
+                            diaryData: diary,
+                            writerData: diaryData.writer!,
+                            onLikePressed: () => _onLikePressed(
+                                  context,
+                                  diary.diaryId,
+                                  diary.likes,
+                                  _diaryViewModel,
+                                ),
+                            showLine: index < (diaryData.diaries!.length - 1),
+                            onMorePressed: () => {
+                                  if (userId != null)
+                                    {
+                                      MoreDialog.show(
+                                        context,
+                                        (diary.fileRelation != null &&
+                                                diary.fileRelation!.isNotEmpty)
+                                            ? diary.fileRelation![0].fileUrl
+                                            : '',
+                                        diary.diaryId,
+                                      )
+                                    }
+                                  else
+                                    {
+                                      FourMoreDialog.show(
+                                        context,
+                                        (action) => _onMorePressed(
+                                          context,
+                                          diary.diaryId,
+                                          action,
+                                          diary,
+                                          _diaryViewModel,
+                                        ),
+                                        true,
+                                        (diary.fileRelation != null &&
+                                                diary.fileRelation!.isNotEmpty)
+                                            ? diary.fileRelation![0].fileUrl
+                                            : '',
+                                        diary.diaryId,
+                                      ),
+                                    }
+                                }),
                       );
                     },
                   ),

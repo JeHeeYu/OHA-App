@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:oha/view/widgets/more_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../models/upload/upload_get_model.dart';
@@ -260,12 +261,23 @@ class _HomeTabState extends State<HomeTab> {
               return FeedWidget(
                 uploadData: data,
                 onLikePressed: () => _onLikePressed(data.postId, data.isLike),
-                onMorePressed: () => FourMoreDialog.show(
-                    context,
-                    (action) => _onMorePressed(data.postId, action, data),
-                    data.isOwn,
-                    data.files.isNotEmpty ? data.files[0].url : '',
-                    data.postId),
+                onMorePressed: () {
+                  if (data.isOwn) {
+                    FourMoreDialog.show(
+                      context,
+                      (action) => _onMorePressed(data.postId, action, data),
+                      data.isOwn,
+                      data.files.isNotEmpty ? data.files[0].url : '',
+                      data.postId,
+                    );
+                  } else {
+                    MoreDialog.show(
+                      context,
+                      data.files.isNotEmpty ? data.files[0].url : '',
+                      data.postId,
+                    );
+                  }
+                },
                 onProfilePressed: () =>
                     _onProfilePressed(data.userId, data.isOwn),
               );

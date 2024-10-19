@@ -134,7 +134,7 @@ class _UploadAgreementsPageState extends State<UploadAgreementsPage> {
       await _storage.write(key: Strings.isMicGranted, value: 'true');
     }
     
-    if(!mounted) return;
+    if(!mounted || !_getAllAgreements()) return;
 
     Navigator.pushReplacement(
       context,
