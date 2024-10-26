@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oha/view/widgets/image_save_dialog.dart';
@@ -72,8 +71,7 @@ class FourMoreDialog {
           print('Failed to download image.');
           return;
         }
-        var filePath = await ImageDownloader.findPath(imageId);
-        
+
         ImageSaveDialog.showCompleteDialog(context);
       } catch (error) {
         print('Failed to save image: $error');
@@ -119,7 +117,8 @@ class FourMoreDialog {
                           context, Strings.saveImage, onTap, imageUrl, postId),
                       if (isOwn) ...[
                         SizedBox(height: ScreenUtil().setHeight(12.0)),
-                        _contentsWidget(context, Strings.edit, onTap, imageUrl, postId),
+                        _contentsWidget(
+                            context, Strings.edit, onTap, imageUrl, postId),
                         SizedBox(height: ScreenUtil().setHeight(12.0)),
                         _contentsWidget(
                             context, Strings.delete, onTap, imageUrl, postId),

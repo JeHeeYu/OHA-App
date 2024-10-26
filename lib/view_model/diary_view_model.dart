@@ -11,9 +11,9 @@ class DiaryViewModel with ChangeNotifier {
   final _diaryRepository = DiaryRepository();
 
   ApiResponse<MyDiaryModel> _myDiary = ApiResponse.loading();
-  List<MyDiary> myDiaryEntries = []; // 내 다이어리 데이터
+  List<MyDiary> myDiaryEntries = [];
   ApiResponse<MyDiaryModel> _userDiary = ApiResponse.loading();
-  List<MyDiary> userDiaryEntries = []; // 사용자 다이어리 데이터
+  List<MyDiary> userDiaryEntries = [];
 
   ApiResponse<MyDiaryModel> get getMyDiary => _myDiary;
   ApiResponse<MyDiaryModel> get getUserDiary => _userDiary;
