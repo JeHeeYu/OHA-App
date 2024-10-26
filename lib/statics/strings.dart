@@ -11,7 +11,7 @@ class Strings {
   static const String locationAgreement = "위치정보 수집 동의";
   static const String termsOfUse = "이용약관";
   static const String loginMainText = "쉽고 간편하게\n오하를 시작해 보세요";
-  static const String loginSubText1 = "1분 ";
+  static const String loginSubText1 = "논현동";
   static const String loginSubText2 = "이면 회원가입 가능해요!";
   static const String home = "홈";
   static const String popularity = "인기";

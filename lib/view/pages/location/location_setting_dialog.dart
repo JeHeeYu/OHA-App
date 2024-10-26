@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oha/view/pages/location/location_setting_page.dart';
@@ -15,6 +13,8 @@ import '../../widgets/button_icon.dart';
 import 'location_change_dialog.dart';
 
 class LocationSettingBottomSheet extends StatelessWidget {
+  const LocationSettingBottomSheet({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return _LocationSettingBottomSheetContent();
@@ -182,62 +182,57 @@ class _LocationSettingBottomSheetContentState
           } catch (error) {}
         }
       },
-      child: Stack(
-        children: [
-          Container(
-            width: ScreenUtil().setWidth(139.0),
-            height: ScreenUtil().setHeight(41.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(ScreenUtil().radius(5.0)),
+      child: Container(
+        width: ScreenUtil().setWidth(139.0),
+        height: ScreenUtil().setHeight(41.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(5.0)),
+          color: isSelectedLocation
+              ? const Color(UserColors.primaryColor)
+              : Colors.white,
+          border: Border.all(
               color: isSelectedLocation
-                  ? const Color(UserColors.primaryColor)
-                  : Colors.white,
-              border: Border.all(
-                  color: isSelectedLocation
-                      ? Colors.white
-                      : const Color(UserColors.ui08)),
-            ),
-            child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12.0)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      (_selectedLocations[index].isEmpty)
-                          ? Strings.addLocation
-                          : _selectedLocations[index],
-                      style: TextStyle(
-                        color: isSelectedLocation
-                            ? Colors.white
-                            : (_selectedLocations[index].isEmpty
-                                ? const Color(UserColors.ui06)
-                                : const Color(UserColors.ui01)),
-                        fontFamily: "Pretendard",
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                  ButtonIcon(
-                    icon: (_selectedLocations[index] == "")
-                        ? Icons.add
-                        : Icons.close,
-                    iconColor: isSelectedLocation
+                  ? Colors.white
+                  : const Color(UserColors.ui08)),
+        ),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12.0)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  (_selectedLocations[index].isEmpty)
+                      ? Strings.addLocation
+                      : _selectedLocations[index],
+                  style: TextStyle(
+                    color: isSelectedLocation
                         ? Colors.white
-                        : const Color(UserColors.ui01),
-                    callback: () => (_selectedLocations[index] == "")
-                        ? _addFrequentLocation(context, index)
-                        : _removeLocation(index),
+                        : (_selectedLocations[index].isEmpty
+                            ? const Color(UserColors.ui06)
+                            : const Color(UserColors.ui01)),
+                    fontFamily: "Pretendard",
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
+                ),
               ),
-            ),
+              ButtonIcon(
+                icon:
+                    (_selectedLocations[index] == "") ? Icons.add : Icons.close,
+                iconColor: isSelectedLocation
+                    ? Colors.white
+                    : const Color(UserColors.ui01),
+                callback: () => (_selectedLocations[index] == "")
+                    ? _addFrequentLocation(context, index)
+                    : _removeLocation(index),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -245,25 +240,32 @@ class _LocationSettingBottomSheetContentState
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      height: ScreenUtil().setHeight(293.0),
+      height: ScreenUtil().setHeight(248.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(ScreenUtil().radius(30.0)),
+          topRight: Radius.circular(ScreenUtil().radius(30.0)),
+        ),
+      ),
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: ScreenUtil().setWidth(22.0),
+          horizontal: ScreenUtil().setWidth(49.0),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: ScreenUtil().setHeight(44.0)),
+            SizedBox(height: ScreenUtil().setHeight(16.0)),
             const Text(
               Strings.locationSetting,
               style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: "Pretendard",
-                  fontWeight: FontWeight.w600,
-                  fontSize: 22),
+                color: Colors.black,
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w600,
+                fontSize: 22,
+              ),
             ),
-            SizedBox(height: ScreenUtil().setHeight(4.0)),
+            SizedBox(height: ScreenUtil().setHeight(10.0)),
             RichText(
               text: const TextSpan(
                 children: [
@@ -289,28 +291,40 @@ class _LocationSettingBottomSheetContentState
               ),
             ),
             SizedBox(height: ScreenUtil().setHeight(16.0)),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(27.0)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildLocationWidget(context, 0),
-                  _buildLocationWidget(context, 1),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
+                    child: _buildLocationWidget(context, 0),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: ScreenUtil().setWidth(8.0)),
+                    child: _buildLocationWidget(context, 1),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: ScreenUtil().setHeight(12.0)),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(27.0)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildLocationWidget(context, 2),
-                  _buildLocationWidget(context, 3),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
+                    child: _buildLocationWidget(context, 2),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: ScreenUtil().setWidth(8.0)),
+                    child: _buildLocationWidget(context, 3),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: ScreenUtil().setHeight(16.0)),
             const Center(

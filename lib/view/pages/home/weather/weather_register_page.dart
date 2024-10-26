@@ -199,12 +199,6 @@ class _WeatherRegisterPageState extends State<WeatherRegisterPage> {
 
         Map<String, String?>? result = await showModalBottomSheet(
           context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
-          ),
           builder: (BuildContext context) {
             return LocationSettingBottomSheet();
           },
