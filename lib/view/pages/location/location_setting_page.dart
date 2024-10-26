@@ -92,6 +92,8 @@ class _LocationSettingPageState extends State<LocationSettingPage> {
                 fontFamily: "Pretendard",
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
+                letterSpacing: -0.41 / 16,
+                height: 25 / 16,
               ),
               decoration: InputDecoration(
                 filled: true,
@@ -100,8 +102,10 @@ class _LocationSettingPageState extends State<LocationSettingPage> {
                 hintStyle: const TextStyle(
                   color: Color(UserColors.ui06),
                   fontFamily: "Pretendard",
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  letterSpacing: -0.41 / 14,
+                  height: 25 / 14,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
