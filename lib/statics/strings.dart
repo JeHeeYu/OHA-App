@@ -106,7 +106,7 @@ class Strings {
   static const String write = "글쓰기";
   static const String keyword = "키워드";
   static const String upload = "업로드하기";
-  static const String uploadWriteHintText = "오늘의 하늘을 기록해 보세요.";
+  static const String uploadWriteHintText = "키워드를 입력해 주세요.";
   static const String keywordDefault = "ex) 가을하늘";
   static const String keywordCount = "/3";
   static const String addKeywordSetting = "키워드 추가 설정";

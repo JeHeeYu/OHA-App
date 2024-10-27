@@ -118,6 +118,19 @@ class _AddKeywordDialogState extends State<AddKeywordDialog> {
     );
   }
 
+  Widget _buildSMIndicator() {
+    return Center(
+      child: Container(
+        width: ScreenUtil().setWidth(67.0),
+        height: ScreenUtil().setHeight(5.0),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(100.0),
+        ),
+      ),
+    );
+  }
+
   void addKeyword() {
     setState(() {
       if (_controller.text.isNotEmpty) {
@@ -133,7 +146,7 @@ class _AddKeywordDialogState extends State<AddKeywordDialog> {
       type: MaterialType.transparency,
       child: Padding(
         padding: EdgeInsets.only(
-            top: ScreenUtil().setHeight(177.0),
+            top: ScreenUtil().setHeight(70.0),
             left: ScreenUtil().setWidth(12.0),
             right: ScreenUtil().setWidth(12.0)),
         child: Align(
@@ -151,7 +164,9 @@ class _AddKeywordDialogState extends State<AddKeywordDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: ScreenUtil().setHeight(40.0)),
+                  SizedBox(height: ScreenUtil().setHeight(11.0)),
+                  _buildSMIndicator(),
+                  SizedBox(height: ScreenUtil().setHeight(29.0)),
                   const Text(
                     Strings.addKeywordSetting,
                     style: TextStyle(
@@ -205,15 +220,15 @@ class _AddKeywordDialogState extends State<AddKeywordDialog> {
                           ),
                         ),
                   SizedBox(height: ScreenUtil().setHeight(22.0)),
-                  Expanded(
+                  SizedBox(
+                    height: ScreenUtil().setHeight(50.0),
                     child: TextField(
-                      maxLines: null,
-                      minLines: null,
-                      expands: true,
                       controller: _controller,
                       focusNode: _focusNode,
+                      maxLines: 1,
+                      expands: false,
                       textAlign: TextAlign.start,
-                      textAlignVertical: TextAlignVertical.top,
+                      textAlignVertical: TextAlignVertical.center,
                       style: const TextStyle(
                         color: Color(UserColors.ui01),
                         fontFamily: "Pretendard",
@@ -250,11 +265,15 @@ class _AddKeywordDialogState extends State<AddKeywordDialog> {
                     child: InfinityButton(
                       height: ScreenUtil().setHeight(50.0),
                       radius: ScreenUtil().radius(8.0),
-                      backgroundColor: const Color(UserColors.primaryColor),
+                      backgroundColor: (_controller.text.isEmpty)
+                          ? const Color(UserColors.ui10)
+                          : const Color(UserColors.primaryColor),
                       text: Strings.add,
                       textSize: 16,
                       textWeight: FontWeight.w600,
-                      textColor: Colors.white,
+                      textColor: (_controller.text.isEmpty)
+                          ? const Color(UserColors.ui06)
+                          : Colors.white,
                       callback: () {
                         addKeyword();
                         Navigator.pop(context, _uploadViewModel.getKetwordList);
