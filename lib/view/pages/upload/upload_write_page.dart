@@ -54,7 +54,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
 
     Future.delayed(Duration.zero, () {
       _uploadViewModel.getKetwordList.clear();
-      _uploadViewModel.setUploadLocation("");
+      _uploadViewModel.setMainUploadLocation("");
 
       setState(() {});
     });
@@ -71,7 +71,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
       List<String> selectedKeywords = widget.uploadData!.keywords;
 
       _keywordList = selectedKeywords;
-      _uploadViewModel.setUploadLocation(locationCode);
+      _uploadViewModel.setMainUploadLocation(locationCode);
     }
   }
 
@@ -172,7 +172,8 @@ class _UploadWritePageState extends State<UploadWritePage> {
     if (result != null) {
       String fullAddress = result['fullAddress'] ?? "";
 
-      _uploadViewModel.setUploadLocation(fullAddress);
+      _uploadViewModel.setMainUploadLocation(fullAddress);
+      _uploadViewModel.setDetailUploadLocation('');
     } else {
       return;
     }
@@ -328,7 +329,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
     );
   }
 
-  Widget _buildLocationWidget(String text) {
+  Widget _buildLocationWidget(String text, bool isMain) {
     final textSize = _getTextWidth(
       text: text,
       style: const TextStyle(
@@ -364,13 +365,19 @@ class _UploadWritePageState extends State<UploadWritePage> {
                 fontSize: 16,
               ),
             ),
-            GestureDetector(
-              onTap: () {
+            SizedBox(width: ScreenUtil().setWidth(4.0)),
+            ButtonIcon(
+              icon: Icons.cancel,
+              iconColor: const Color(UserColors.ui07),
+              callback: () {
                 setState(() {
-                  _uploadViewModel.setUploadLocation("");
+                  if (isMain) {
+                    _uploadViewModel.setMainUploadLocation("");
+                  } else {
+                    _uploadViewModel.setDetailUploadLocation("");
+                  }
                 });
               },
-              child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
             ),
           ],
         ),
@@ -394,8 +401,8 @@ class _UploadWritePageState extends State<UploadWritePage> {
     String content = _textController.text;
     String selectCategory = Strings.categoryMap[_categorySelectIndex] ?? "";
     List<String> keyword = _keywordList;
-    String selectLocationCode =
-        _locationViewModel.getCodeByAddress(_uploadViewModel.getUploadLocation);
+    String selectLocationCode = _locationViewModel
+        .getCodeByAddress(_uploadViewModel.getMainUploadLocation);
 
     List<String> selectedKeywords = [];
     for (int i = 0; i < min(keyword.length, 3); i++) {
@@ -407,7 +414,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
       "categoryCode": selectCategory,
       "keywords": selectedKeywords,
       "regionCode": selectLocationCode,
-      "locationDetail": _uploadViewModel.getUploadLocation,
+      "locationDetail": _uploadViewModel.getMainUploadLocation,
     };
 
     try {
@@ -467,7 +474,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
       Strings.categoryCodeKey: selectCategory,
       Strings.keywordsKey: selectedKeywords,
       Strings.regionCodeKey: '1111051500',
-      Strings.locationDetailKey: _uploadViewModel.getUploadLocation,
+      Strings.locationDetailKey: _uploadViewModel.getMainUploadLocation,
       Strings.updateItemKey: "content,keywords,regionCode"
     };
 
@@ -716,10 +723,19 @@ class _UploadWritePageState extends State<UploadWritePage> {
             ],
           ),
           SizedBox(height: ScreenUtil().setHeight(12.0)),
-          (_uploadViewModel.getUploadLocation.isEmpty)
-              ? _buildLocationDefaultWidget()
-              : _buildLocationWidget(widget.uploadData?.locationDetail ??
-                  _uploadViewModel.getUploadLocation),
+          Row(
+            children: [
+              (_uploadViewModel.getMainUploadLocation.isEmpty)
+                  ? _buildLocationDefaultWidget()
+                  : _buildLocationWidget(widget.uploadData?.locationDetail ??
+                      _uploadViewModel.getMainUploadLocation, true),
+              SizedBox(width: ScreenUtil().setWidth(11.0)),
+              (_uploadViewModel.getDetailUploadLocation.isNotEmpty)
+                  ? _buildLocationWidget(
+                      _uploadViewModel.getDetailUploadLocation, false)
+                  : Container(),
+            ],
+          ),
         ],
       ),
     );
@@ -752,14 +768,14 @@ class _UploadWritePageState extends State<UploadWritePage> {
             height: ScreenUtil().setHeight(50.0),
             radius: ScreenUtil().radius(8.0),
             backgroundColor: (_textController.text.isNotEmpty &&
-                    _uploadViewModel.getUploadLocation.isNotEmpty)
+                    _uploadViewModel.getMainUploadLocation.isNotEmpty)
                 ? const Color(UserColors.primaryColor)
                 : const Color(UserColors.ui10),
             text: Strings.upload,
             textSize: 16,
             textWeight: FontWeight.w600,
             textColor: (_textController.text.isNotEmpty &&
-                    _uploadViewModel.getUploadLocation.isNotEmpty)
+                    _uploadViewModel.getMainUploadLocation.isNotEmpty)
                 ? Colors.white
                 : const Color(UserColors.ui06),
             callback: (widget.isEdit) ? edit : upload,

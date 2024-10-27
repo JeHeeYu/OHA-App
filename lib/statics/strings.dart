@@ -74,9 +74,8 @@ class Strings {
   static const String exampleLocation = "ex) 면목동";
   static const String addInputLocation = "추가 위치 정보 입력";
   static const String addInputLocationGuide1 = "선택한 위치의 ";
-  static const String addInputLocationGuide2 = "상세 정보";
+  static const String addInputLocationGuide2 = "상세 위치";
   static const String addInputLocationGuide3 = "를 입력해 주세요.";
-  static const String onlyLocationRegister = "위치만 등록하기";
   static const String allAlbum = "모든 앨범";
   static const String locationSetting = "위치 설정";
   static const String addLocation = "추가하기";
@@ -206,7 +205,7 @@ class Strings {
   static const String diaryEmpty = "다이어리를 추가해 보세요";
   static const String invalidNickname = "사용할 수 없는 이름입니다. 다른 이름을 사용해 주세요.";
   static const String isLocationAlreadyAdded = "이미 등록된 지역입니다.";
-  static const String locationHintText = "ex) 뚝섬 전망 문화 콤플렉스 자벌레";
+  static const String locationHintText = "상세 위치를 입력해 주세요.";
   static const String diaryComplete = "다이어리 등록이 완료되었습니다.";
   static const String diaryEditComplete = "다이어리 수정이 완료되었습니다.";
   static const String diaryLocationHint = "위치를 입력해 주세요";
