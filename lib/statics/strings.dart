@@ -126,6 +126,7 @@ class Strings {
   static const String veryHot = "매우 더움";
   static const String wind = "바람";
   static const String veryCold = "매우 추움";
+  static const String snowRain = "눈/비";
   static const String loginedWithKakao = "카카오 계정으로 로그인 됨";
   static const String loginedWithNaver = "네이버 계정으로 로그인 됨";
   static const String loginedWithGoogle = "구글 계정으로 로그인 됨";
