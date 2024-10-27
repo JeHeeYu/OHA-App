@@ -40,13 +40,15 @@ class _FeedWidgetState extends State<FeedWidget> {
     _likesCount = widget.uploadData.likeCount;
     _isLike = widget.uploadData.isLike;
 
-    if (widget.uploadData.mediaType == '동영상' && widget.uploadData.files.isNotEmpty) {
-      _videoController = VideoPlayerController.network(widget.uploadData.files[0].url)
-        ..initialize().then((_) {
-          setState(() {}); // Ensure the widget rebuilds once the video is initialized
-        })
-        ..setLooping(true) // Loop the video
-        ..play(); // Start playing the video immediately
+    if (widget.uploadData.mediaType == '동영상' &&
+        widget.uploadData.files.isNotEmpty) {
+      _videoController =
+          VideoPlayerController.network(widget.uploadData.files[0].url)
+            ..initialize().then((_) {
+              setState(() {});
+            })
+            ..setLooping(true)
+            ..play();
     }
   }
 
@@ -81,25 +83,35 @@ class _FeedWidgetState extends State<FeedWidget> {
     return textPainter;
   }
 
+  String formatDate(String dateTime) {
+    String datePart = dateTime.substring(0, 10);
+    List<String> parts = datePart.split('-');
+    String year = parts[0];
+    String month = parts[1];
+    String day = parts[2];
+
+    return '$year년 $month월 $day일';
+  }
+
   Widget _buildHashTagWidget(String text) {
     final textSpan = _buildTextSpan(text);
     final textPainter = _getTextPainter(textSpan);
 
     return Container(
-      height: ScreenUtil().setHeight(26.0),
+      height: ScreenUtil().setHeight(20.0),
       width: ScreenUtil()
           .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(16.0)),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color(UserColors.primaryColor)),
-        borderRadius: BorderRadius.circular(ScreenUtil().radius(12.0)),
+        borderRadius: BorderRadius.circular(ScreenUtil().radius(5.0)),
+        color: const Color(UserColors.tint01),
       ),
       alignment: Alignment.center,
       child: Text(
         text,
         style: const TextStyle(
           fontFamily: "Pretendard",
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
           color: Color(UserColors.primaryColor),
         ),
       ),
@@ -145,16 +157,16 @@ class _FeedWidgetState extends State<FeedWidget> {
                       color: Color(UserColors.ui01),
                     ),
                   ),
-                  SizedBox(height: ScreenUtil().setHeight(3.0)),
                   Text(
-                    widget.uploadData.locationDetail,
-                    style: const TextStyle(
-                      fontFamily: "Pretendard",
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
-                      color: Color(UserColors.ui04),
-                    ),
-                  ),
+                      "${formatDate(widget.uploadData.regDtm)} ${widget.uploadData.locationDetail}",
+                      style: const TextStyle(
+                        fontFamily: "Pretendard",
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: Color(UserColors.ui04),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1),
                 ],
               ),
             ],
@@ -237,12 +249,15 @@ class _FeedWidgetState extends State<FeedWidget> {
   Widget _buildMediaWidget() {
     if (widget.uploadData.mediaType == '사진') {
       return Image.network(
-        widget.uploadData.files.isNotEmpty ? widget.uploadData.files[0].url : '',
+        widget.uploadData.files.isNotEmpty
+            ? widget.uploadData.files[0].url
+            : '',
         fit: BoxFit.cover,
         width: double.infinity,
         height: ScreenUtil().setHeight(390.0),
       );
-    } else if (widget.uploadData.mediaType == '동영상' && _videoController != null) {
+    } else if (widget.uploadData.mediaType == '동영상' &&
+        _videoController != null) {
       return _videoController!.value.isInitialized
           ? AspectRatio(
               aspectRatio: _videoController!.value.aspectRatio,

@@ -158,6 +158,7 @@ class UploadViewModel with ChangeNotifier {
     int statusCode = 400;
     await _uploadRepository.posts(queryParams).then((value) {
       _setUploadGetData(ApiResponse.complete(value), append: append);
+      print("Jehee : ${value.data[0].regDtm}");
       statusCode = value.statusCode;
     }).onError((error, stackTrace) {
       _setUploadGetData(ApiResponse.error(error.toString()));
