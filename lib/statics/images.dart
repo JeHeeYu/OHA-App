@@ -64,7 +64,8 @@ class Images {
   static const String veryHotDisable = "assets/images/very_hot_disable.svg";
   static const String windDisable = "assets/images/wind_disable.svg";
   static const String veryColdDisable = "assets/images/very_cold_disable.svg";
-  static const String manyCloudEnable = "assets/images/many_cloud_disable.svg";
+  static const String snowRainDisable = "assets/images/snow_rain_disable.svg";
+  static const String manyCloudEnable = "assets/images/many_cloud_enable.svg";
   static const String sunnyEnable = "assets/images/sunny_enable.svg";
   static const String rainEnable = "assets/images/rain_enable.svg";
   static const String thunderEnable = "assets/images/thunder_enable.svg";
@@ -74,6 +75,7 @@ class Images {
   static const String veryHotEnable = "assets/images/very_hot_enable.svg";
   static const String windEnable = "assets/images/wind_enable.svg";
   static const String veryColdEnable = "assets/images/very_cold_enable.svg";
+  static const String snowRainEnable = "assets/images/snow_rain_enable.svg";
   static const String nowWeatherEmpty = "assets/images/now_weather_empty.svg";
   static const String snowRain = "assets/images/snow_rain.svg";
   static const String loading_1 = "assets/images/loading_1.svg";
@@ -93,7 +95,8 @@ class Images {
   static const String commentDefaultProfile =
       "assets/images/comment_default_profile.svg";
   static const String reportComplete = "assets/images/report_complete.svg";
-  static const String weatherRegisterGuide = "assets/images/weather_register_guide.svg";
+  static const String weatherRegisterGuide =
+      "assets/images/weather_register_guide.svg";
 
   static const Map<String, String> weatherImageMap = {
     "흐림": Images.cloudyEnable,
@@ -106,6 +109,7 @@ class Images {
     "매우 추움": Images.veryColdEnable,
     "매우 더움": Images.veryHotEnable,
     "바람": Images.windEnable,
+    "눈/비": Images.snowRainEnable,
   };
 
   static const Map<String, String> diaryWeatherImageMap = {
@@ -119,6 +123,7 @@ class Images {
     "WTHR_VERY_COLD": Images.veryColdEnable,
     "매우 더움": Images.veryHotEnable,
     "WTHR_WIND": Images.windEnable,
+    "WTHR_SNOW_RAIN": Images.snowRainEnable
   };
 
   static const Map<String, String> mainWeatherImageMap = {
@@ -132,5 +137,6 @@ class Images {
     "KMA_HOT": veryHotEnable,
     "KMA_WINDY": windEnable,
     "KMA_RAIN_SNOW": snowRain,
+    "WTHR_SNOW_RAIN": snowRainEnable
   };
 }

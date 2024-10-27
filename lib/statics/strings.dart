@@ -74,9 +74,8 @@ class Strings {
   static const String exampleLocation = "ex) 면목동";
   static const String addInputLocation = "추가 위치 정보 입력";
   static const String addInputLocationGuide1 = "선택한 위치의 ";
-  static const String addInputLocationGuide2 = "상세 정보";
+  static const String addInputLocationGuide2 = "상세 위치";
   static const String addInputLocationGuide3 = "를 입력해 주세요.";
-  static const String onlyLocationRegister = "위치만 등록하기";
   static const String allAlbum = "모든 앨범";
   static const String locationSetting = "위치 설정";
   static const String addLocation = "추가하기";
@@ -106,7 +105,7 @@ class Strings {
   static const String write = "글쓰기";
   static const String keyword = "키워드";
   static const String upload = "업로드하기";
-  static const String uploadWriteHintText = "오늘의 하늘을 기록해 보세요.";
+  static const String uploadWriteHintText = "키워드를 입력해 주세요.";
   static const String keywordDefault = "ex) 가을하늘";
   static const String keywordCount = "/3";
   static const String addKeywordSetting = "키워드 추가 설정";
@@ -127,6 +126,7 @@ class Strings {
   static const String veryHot = "매우 더움";
   static const String wind = "바람";
   static const String veryCold = "매우 추움";
+  static const String snowRain = "눈/비";
   static const String loginedWithKakao = "카카오 계정으로 로그인 됨";
   static const String loginedWithNaver = "네이버 계정으로 로그인 됨";
   static const String loginedWithGoogle = "구글 계정으로 로그인 됨";
@@ -206,7 +206,7 @@ class Strings {
   static const String diaryEmpty = "다이어리를 추가해 보세요";
   static const String invalidNickname = "사용할 수 없는 이름입니다. 다른 이름을 사용해 주세요.";
   static const String isLocationAlreadyAdded = "이미 등록된 지역입니다.";
-  static const String locationHintText = "ex) 뚝섬 전망 문화 콤플렉스 자벌레";
+  static const String locationHintText = "상세 위치를 입력해 주세요.";
   static const String diaryComplete = "다이어리 등록이 완료되었습니다.";
   static const String diaryEditComplete = "다이어리 수정이 완료되었습니다.";
   static const String diaryLocationHint = "위치를 입력해 주세요";

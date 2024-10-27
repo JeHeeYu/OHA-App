@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:oha/models/upload/comment_read_model.dart';
@@ -13,10 +12,12 @@ class UploadViewModel with ChangeNotifier {
   UploadRepository _uploadRepository = UploadRepository();
 
   List<String> _keywordList = [];
-  String _uploadLocation = "";
+  String _mainUploadLocation = "";
+  String _detailUploadLocation = "";
 
   List<String> get getKetwordList => _keywordList;
-  String get getUploadLocation => _uploadLocation;
+  String get getMainUploadLocation => _mainUploadLocation;
+  String get getDetailUploadLocation => _detailUploadLocation;
 
   ApiResponse<UploadGetModel> uploadGetData = ApiResponse.loading();
   ApiResponse<UploadGetModel> popularUploadGetData = ApiResponse.loading();
@@ -37,8 +38,13 @@ class UploadViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setUploadLocation(String location) {
-    _uploadLocation = location;
+  void setMainUploadLocation(String location) {
+    _mainUploadLocation = location;
+    notifyListeners();
+  }
+
+  void setDetailUploadLocation(String location) {
+    _detailUploadLocation = location;
     notifyListeners();
   }
 
@@ -152,6 +158,7 @@ class UploadViewModel with ChangeNotifier {
     int statusCode = 400;
     await _uploadRepository.posts(queryParams).then((value) {
       _setUploadGetData(ApiResponse.complete(value), append: append);
+      print("Jehee : ${value.data[0].regDtm}");
       statusCode = value.statusCode;
     }).onError((error, stackTrace) {
       _setUploadGetData(ApiResponse.error(error.toString()));

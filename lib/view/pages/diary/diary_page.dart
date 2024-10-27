@@ -665,7 +665,6 @@ class _DiaryPageState extends State<DiaryPage> {
     return GestureDetector(
       onTap: () {
         if (diary != null) {
-          print("JEhee ${diary}");
           _showDiaryBottomSheet(context, selectedDate);
         }
       },

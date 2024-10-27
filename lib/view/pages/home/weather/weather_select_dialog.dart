@@ -22,6 +22,7 @@ class WeatherSelectDialog extends StatelessWidget {
     Strings.thunderSnow,
     Strings.wind,
     Strings.veryCold,
+    Strings.snowRain
   ];
 
   final List<String> weatherImageList = [
@@ -35,6 +36,7 @@ class WeatherSelectDialog extends StatelessWidget {
     Images.thunderRainDisable,
     Images.windDisable,
     Images.veryColdDisable,
+    Images.snowRainDisable
   ];
 
   final List<String> weatherEnableImageList = [
@@ -48,6 +50,7 @@ class WeatherSelectDialog extends StatelessWidget {
     Images.thunderRainEnable,
     Images.windEnable,
     Images.veryColdEnable,
+    Images.snowRainEnable
   ];
 
   Widget _contentsWidget(
@@ -59,12 +62,8 @@ class WeatherSelectDialog extends StatelessWidget {
       },
       child: Column(
         children: [
-          SvgPicture.asset(
-            image,
-            width: ScreenUtil().setWidth(40.0),
-            height: ScreenUtil().setHeight(40.0),
-          ),
-          SizedBox(height: ScreenUtil().setHeight(22.0)),
+          SvgPicture.asset(image),
+          SizedBox(height: ScreenUtil().setHeight(4.0)),
           Text(
             title,
             style: const TextStyle(

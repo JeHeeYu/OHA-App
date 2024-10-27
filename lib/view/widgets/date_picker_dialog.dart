@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 import '../../statics/Colors.dart';
 import '../../statics/strings.dart';
@@ -10,11 +9,7 @@ class DatePicker extends StatefulWidget {
   const DatePicker({Key? key}) : super(key: key);
 
   @override
-  _DatePickerState createState() => _DatePickerState();
-
-    String _formatDate(DateTime date) {
-    return DateFormat('yyyyMMdd').format(date);
-  }
+  DatePickerState createState() => DatePickerState();
 
   static Future<String?> show(BuildContext context) async {
     return await showDialog<String>(
@@ -42,7 +37,7 @@ class DatePicker extends StatefulWidget {
   }
 }
 
-class _DatePickerState extends State<DatePicker> {
+class DatePickerState extends State<DatePicker> {
   final List<String> _dateList = [];
   late FixedExtentScrollController _scrollController;
   int _selectedIndex = 0;
@@ -69,17 +64,6 @@ class _DatePickerState extends State<DatePicker> {
     }
   }
 
-  bool _isToday(String date) {
-    final parts = date.split(' ');
-    final year = int.parse(parts[0].substring(0, parts[0].length - 1));
-    final month = int.parse(parts[1].substring(0, parts[1].length - 1));
-    final day = int.parse(parts[2].substring(0, parts[2].length - 1));
-    final dateTime = DateTime(year, month, day);
-    return dateTime.year == _today.year &&
-        dateTime.month == _today.month &&
-        dateTime.day == _today.day;
-  }
-
   String _formatDate(DateTime date) {
     return '${date.year}년 ${date.month}월 ${date.day}일';
   }
@@ -98,20 +82,20 @@ class _DatePickerState extends State<DatePicker> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0.0),
       child: SizedBox(
-        height: ScreenUtil().setHeight(250.0),
+        height: ScreenUtil().setHeight(220.0),
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: ScreenUtil().setWidth(10.0),
-              vertical: ScreenUtil().setHeight(15.0)),
+              horizontal: ScreenUtil().setWidth(12.0),
+              vertical: ScreenUtil().setHeight(20.0)),
           child: Column(
             children: [
-              SizedBox(height: ScreenUtil().setHeight(29.0)),
+              SizedBox(height: ScreenUtil().setHeight(16.0)),
               Expanded(
                 child: ListWheelScrollView.useDelegate(
                   controller: _scrollController,
-                  itemExtent: 35,
+                  itemExtent: 26,
                   onSelectedItemChanged: (index) {
                     setState(() {
                       _selectedIndex = index;
@@ -126,14 +110,20 @@ class _DatePickerState extends State<DatePicker> {
                       final isSelected = index == _selectedIndex;
                       return GestureDetector(
                         onTap: () => _selectDateAndScroll(index),
-                        child: Container(
-                          color: isSelected
-                              ? const Color(UserColors.ui11)
-                              : Colors.transparent,
-                          child: Center(
-                            child: Text(
-                              _dateList[index],
-                              style: TextStyle(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: ScreenUtil().setWidth(10.0)),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? const Color(UserColors.ui11)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _dateList[index],
+                                style: TextStyle(
                                   fontSize: isSelected
                                       ? ScreenUtil().setSp(20.0)
                                       : ScreenUtil().setSp(16.0),
@@ -141,7 +131,9 @@ class _DatePickerState extends State<DatePicker> {
                                   fontWeight: FontWeight.w500,
                                   color: isSelected
                                       ? Colors.black
-                                      : const Color(UserColors.ui04)),
+                                      : const Color(UserColors.ui04),
+                                ),
+                              ),
                             ),
                           ),
                         ),

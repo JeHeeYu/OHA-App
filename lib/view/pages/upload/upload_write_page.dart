@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oha/view/pages/location/location_setting_page.dart';
+import 'package:oha/view/widgets/button_icon.dart';
 import 'package:oha/view/widgets/loading_widget.dart';
 import 'package:oha/view_model/upload_view_model.dart';
 import 'package:oha/view/pages/upload/add_keyword_dialog.dart';
@@ -53,7 +54,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
 
     Future.delayed(Duration.zero, () {
       _uploadViewModel.getKetwordList.clear();
-      _uploadViewModel.setUploadLocation("");
+      _uploadViewModel.setMainUploadLocation("");
 
       setState(() {});
     });
@@ -70,23 +71,8 @@ class _UploadWritePageState extends State<UploadWritePage> {
       List<String> selectedKeywords = widget.uploadData!.keywords;
 
       _keywordList = selectedKeywords;
-      _uploadViewModel.setUploadLocation(locationCode);
+      _uploadViewModel.setMainUploadLocation(locationCode);
     }
-  }
-
-  TextSpan _buildTextSpan(String text) {
-    return TextSpan(
-      text: text,
-    );
-  }
-
-  TextPainter _getTextPainter(TextSpan textSpan) {
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    return textPainter;
   }
 
   Widget _buildCategoryWidget(int index) {
@@ -115,8 +101,14 @@ class _UploadWritePageState extends State<UploadWritePage> {
         break;
     }
 
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
+    final textSize = _getTextWidth(
+      text: text,
+      style: const TextStyle(
+        fontFamily: "Pretendard",
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
@@ -128,14 +120,15 @@ class _UploadWritePageState extends State<UploadWritePage> {
         padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
         child: Container(
           height: ScreenUtil().setHeight(35.0),
-          width: ScreenUtil()
-              .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(30.0)),
+          width: textSize.width + ScreenUtil().setWidth(35.0),
           decoration: BoxDecoration(
             color: (_categorySelectIndex == index)
                 ? const Color(UserColors.primaryColor)
                 : Colors.white,
             borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
-            border: Border.all(color: const Color(UserColors.ui08)),
+            border: (_categorySelectIndex == index)
+                ? null
+                : Border.all(color: const Color(UserColors.ui08)),
           ),
           alignment: Alignment.center,
           child: Text(
@@ -179,7 +172,8 @@ class _UploadWritePageState extends State<UploadWritePage> {
     if (result != null) {
       String fullAddress = result['fullAddress'] ?? "";
 
-      _uploadViewModel.setUploadLocation(fullAddress);
+      _uploadViewModel.setMainUploadLocation(fullAddress);
+      _uploadViewModel.setDetailUploadLocation('');
     } else {
       return;
     }
@@ -196,6 +190,20 @@ class _UploadWritePageState extends State<UploadWritePage> {
     );
 
     setState(() {});
+  }
+
+  static Size _getTextWidth({
+    required String text,
+    required TextStyle style,
+    int? maxLines,
+    TextDirection? textDirection,
+  }) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: maxLines ?? 1,
+      textDirection: textDirection ?? TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+    return textPainter.size;
   }
 
   Widget _buildKeywordDefaultWidget() {
@@ -231,8 +239,15 @@ class _UploadWritePageState extends State<UploadWritePage> {
   }
 
   Widget _buildKeywordWidget(String text, int index) {
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
+    final textSize = _getTextWidth(
+      text: text,
+      style: const TextStyle(
+        color: Color(UserColors.ui01),
+        fontFamily: "Pretendard",
+        fontWeight: FontWeight.w500,
+        fontSize: 16,
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
@@ -241,85 +256,89 @@ class _UploadWritePageState extends State<UploadWritePage> {
       },
       child: Container(
         height: ScreenUtil().setHeight(35.0),
-        width: ScreenUtil()
-            .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(75.0)),
+        width: textSize.width + ScreenUtil().setWidth(50.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
           border: Border.all(color: const Color(UserColors.ui08)),
         ),
         alignment: Alignment.center,
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(10.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                    color: Color(UserColors.ui01),
-                    fontFamily: "Pretendard",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+        child: Row(
+          children: [
+            SizedBox(width: ScreenUtil().setWidth(10.0)),
+            Text(
+              text,
+              style: const TextStyle(
+                color: Color(UserColors.ui01),
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
               ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _keywordList.removeAt(index);
-                  });
-                },
-                child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
-              ),
-            ],
-          ),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(3.0)),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _keywordList.removeAt(index);
+                });
+              },
+              child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(7.0)),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildLocationDefaultWidget(String text) {
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
-
+  Widget _buildLocationDefaultWidget() {
     return GestureDetector(
       onTap: () async {
         getLocationInfo();
       },
-      child: Padding(
-        padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
-        child: Container(
-          height: ScreenUtil().setHeight(35.0),
-          width: ScreenUtil()
-              .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(30.0)),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
-            border: Border.all(color: const Color(UserColors.ui08)),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontFamily: "Pretendard",
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Color(UserColors.ui06),
+      child: Container(
+        height: ScreenUtil().setHeight(35.0),
+        width: ScreenUtil().setWidth(105.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
+          border: Border.all(color: const Color(UserColors.ui08)),
+        ),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ButtonIcon(
+              icon: Icons.add,
+              iconColor: const Color(UserColors.ui04),
+              callback: () {},
             ),
-          ),
+            SizedBox(width: ScreenUtil().setWidth(5.0)),
+            const Text(
+              Strings.add,
+              style: TextStyle(
+                fontFamily: "Pretendard",
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Color(UserColors.ui06),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildLocationWidget(String text) {
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
+  Widget _buildLocationWidget(String text, bool isMain) {
+    final textSize = _getTextWidth(
+      text: text,
+      style: const TextStyle(
+        color: Color(UserColors.ui01),
+        fontFamily: "Pretendard",
+        fontWeight: FontWeight.w500,
+        fontSize: 16,
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
@@ -327,43 +346,40 @@ class _UploadWritePageState extends State<UploadWritePage> {
       },
       child: Container(
         height: ScreenUtil().setHeight(35.0),
-        width: ScreenUtil()
-            .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(75.0)),
+        width: textSize.width + ScreenUtil().setWidth(50.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
           border: Border.all(color: const Color(UserColors.ui08)),
         ),
         alignment: Alignment.center,
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(10.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                    color: Color(UserColors.ui01),
-                    fontFamily: "Pretendard",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+        child: Row(
+          children: [
+            SizedBox(width: ScreenUtil().setWidth(10.0)),
+            Text(
+              text,
+              style: const TextStyle(
+                color: Color(UserColors.ui01),
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
               ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _uploadViewModel.setUploadLocation("");
-                  });
-                },
-                child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
-              ),
-            ],
-          ),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(4.0)),
+            ButtonIcon(
+              icon: Icons.cancel,
+              iconColor: const Color(UserColors.ui07),
+              callback: () {
+                setState(() {
+                  if (isMain) {
+                    _uploadViewModel.setMainUploadLocation("");
+                  } else {
+                    _uploadViewModel.setDetailUploadLocation("");
+                  }
+                });
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -385,8 +401,8 @@ class _UploadWritePageState extends State<UploadWritePage> {
     String content = _textController.text;
     String selectCategory = Strings.categoryMap[_categorySelectIndex] ?? "";
     List<String> keyword = _keywordList;
-    String selectLocationCode =
-        _locationViewModel.getCodeByAddress(_uploadViewModel.getUploadLocation);
+    String selectLocationCode = _locationViewModel
+        .getCodeByAddress(_uploadViewModel.getMainUploadLocation);
 
     List<String> selectedKeywords = [];
     for (int i = 0; i < min(keyword.length, 3); i++) {
@@ -398,7 +414,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
       "categoryCode": selectCategory,
       "keywords": selectedKeywords,
       "regionCode": selectLocationCode,
-      "locationDetail": _uploadViewModel.getUploadLocation,
+      "locationDetail": _uploadViewModel.getMainUploadLocation,
     };
 
     try {
@@ -458,7 +474,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
       Strings.categoryCodeKey: selectCategory,
       Strings.keywordsKey: selectedKeywords,
       Strings.regionCodeKey: '1111051500',
-      Strings.locationDetailKey: _uploadViewModel.getUploadLocation,
+      Strings.locationDetailKey: _uploadViewModel.getMainUploadLocation,
       Strings.updateItemKey: "content,keywords,regionCode"
     };
 
@@ -497,7 +513,6 @@ class _UploadWritePageState extends State<UploadWritePage> {
         showCompleteDialog();
       }
     } catch (error) {
-      print('Error updating: $error');
     } finally {
       setState(() {
         _isLoading = false;
@@ -705,14 +720,22 @@ class _UploadWritePageState extends State<UploadWritePage> {
                   fontSize: 16,
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: Colors.black),
             ],
           ),
           SizedBox(height: ScreenUtil().setHeight(12.0)),
-          (_uploadViewModel.getUploadLocation.isEmpty)
-              ? _buildLocationDefaultWidget("ex) 면목동")
-              : _buildLocationWidget(widget.uploadData?.locationDetail ??
-                  _uploadViewModel.getUploadLocation),
+          Row(
+            children: [
+              (_uploadViewModel.getMainUploadLocation.isEmpty)
+                  ? _buildLocationDefaultWidget()
+                  : _buildLocationWidget(widget.uploadData?.locationDetail ??
+                      _uploadViewModel.getMainUploadLocation, true),
+              SizedBox(width: ScreenUtil().setWidth(11.0)),
+              (_uploadViewModel.getDetailUploadLocation.isNotEmpty)
+                  ? _buildLocationWidget(
+                      _uploadViewModel.getDetailUploadLocation, false)
+                  : Container(),
+            ],
+          ),
         ],
       ),
     );
@@ -745,16 +768,16 @@ class _UploadWritePageState extends State<UploadWritePage> {
             height: ScreenUtil().setHeight(50.0),
             radius: ScreenUtil().radius(8.0),
             backgroundColor: (_textController.text.isNotEmpty &&
-                    _uploadViewModel.getUploadLocation.isNotEmpty)
+                    _uploadViewModel.getMainUploadLocation.isNotEmpty)
                 ? const Color(UserColors.primaryColor)
                 : const Color(UserColors.ui10),
             text: Strings.upload,
             textSize: 16,
             textWeight: FontWeight.w600,
             textColor: (_textController.text.isNotEmpty &&
-                    _uploadViewModel.getUploadLocation.isNotEmpty)
+                    _uploadViewModel.getMainUploadLocation.isNotEmpty)
                 ? Colors.white
-                : Colors.black,
+                : const Color(UserColors.ui06),
             callback: (widget.isEdit) ? edit : upload,
           ),
         ),
@@ -827,7 +850,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
                     _buildPhotoArea(),
                     SizedBox(height: ScreenUtil().setHeight(22.0)),
                     _buildContentsWidget(),
-                    SizedBox(height: ScreenUtil().setHeight(15.0)),
+                    SizedBox(height: ScreenUtil().setHeight(49.0)),
                     _buildCategoryArea(),
                     SizedBox(height: ScreenUtil().setHeight(28.0)),
                     _buildKeywordArea(),
