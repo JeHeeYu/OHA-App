@@ -96,38 +96,7 @@ class _NowWeatherTabState extends State<NowWeatherTab> {
                   const WeatherRegisterPage(editState: false)),
         );
       },
-      child: Stack(
-        children: [
-          SvgPicture.asset(Images.weatherRegistedBg),
-          Padding(
-            padding: EdgeInsets.only(
-                top: ScreenUtil().setHeight(155.0),
-                left: ScreenUtil().setWidth(32.0)),
-            child: Container(
-              width: ScreenUtil().setWidth(139.0),
-              height: ScreenUtil().setHeight(41.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                border: Border.all(
-                    color: const Color(UserColors.ui08),
-                    width: ScreenUtil().setWidth(1.0)),
-                color: Colors.white,
-              ),
-              child: const Center(
-                child: Text(
-                  Strings.register,
-                  style: TextStyle(
-                    fontFamily: "Pretendard",
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color(UserColors.ui01),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: SvgPicture.asset(Images.weatherRegistedBg)
     );
   }
 
@@ -140,6 +109,7 @@ class _NowWeatherTabState extends State<NowWeatherTab> {
         SizedBox(height: ScreenUtil().setHeight(12.0)),
         const NowWeatherWidget(),
         _buildMyRegisterWeatherWidget(),
+        SizedBox(height: ScreenUtil().setHeight(32.0)),
         _buildWeatherRegisterWidget(),
         SizedBox(height: ScreenUtil().setHeight(100.0)),
       ],
