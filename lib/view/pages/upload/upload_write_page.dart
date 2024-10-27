@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oha/view/pages/location/location_setting_page.dart';
+import 'package:oha/view/widgets/button_icon.dart';
 import 'package:oha/view/widgets/loading_widget.dart';
 import 'package:oha/view_model/upload_view_model.dart';
 import 'package:oha/view/pages/upload/add_keyword_dialog.dart';
@@ -74,21 +75,6 @@ class _UploadWritePageState extends State<UploadWritePage> {
     }
   }
 
-  TextSpan _buildTextSpan(String text) {
-    return TextSpan(
-      text: text,
-    );
-  }
-
-  TextPainter _getTextPainter(TextSpan textSpan) {
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    return textPainter;
-  }
-
   Widget _buildCategoryWidget(int index) {
     String text = "";
 
@@ -115,8 +101,14 @@ class _UploadWritePageState extends State<UploadWritePage> {
         break;
     }
 
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
+    final textSize = _getTextWidth(
+      text: text,
+      style: const TextStyle(
+        fontFamily: "Pretendard",
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
@@ -128,14 +120,15 @@ class _UploadWritePageState extends State<UploadWritePage> {
         padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
         child: Container(
           height: ScreenUtil().setHeight(35.0),
-          width: ScreenUtil()
-              .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(30.0)),
+          width: textSize.width + ScreenUtil().setWidth(35.0),
           decoration: BoxDecoration(
             color: (_categorySelectIndex == index)
                 ? const Color(UserColors.primaryColor)
                 : Colors.white,
             borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
-            border: Border.all(color: const Color(UserColors.ui08)),
+            border: (_categorySelectIndex == index)
+                ? null
+                : Border.all(color: const Color(UserColors.ui08)),
           ),
           alignment: Alignment.center,
           child: Text(
@@ -198,6 +191,20 @@ class _UploadWritePageState extends State<UploadWritePage> {
     setState(() {});
   }
 
+  static Size _getTextWidth({
+    required String text,
+    required TextStyle style,
+    int? maxLines,
+    TextDirection? textDirection,
+  }) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: maxLines ?? 1,
+      textDirection: textDirection ?? TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+    return textPainter.size;
+  }
+
   Widget _buildKeywordDefaultWidget() {
     String text = Strings.keywordDefault;
 
@@ -231,8 +238,15 @@ class _UploadWritePageState extends State<UploadWritePage> {
   }
 
   Widget _buildKeywordWidget(String text, int index) {
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
+    final textSize = _getTextWidth(
+      text: text,
+      style: const TextStyle(
+        color: Color(UserColors.ui01),
+        fontFamily: "Pretendard",
+        fontWeight: FontWeight.w500,
+        fontSize: 16,
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
@@ -241,85 +255,89 @@ class _UploadWritePageState extends State<UploadWritePage> {
       },
       child: Container(
         height: ScreenUtil().setHeight(35.0),
-        width: ScreenUtil()
-            .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(75.0)),
+        width: textSize.width + ScreenUtil().setWidth(50.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
           border: Border.all(color: const Color(UserColors.ui08)),
         ),
         alignment: Alignment.center,
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(10.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                    color: Color(UserColors.ui01),
-                    fontFamily: "Pretendard",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+        child: Row(
+          children: [
+            SizedBox(width: ScreenUtil().setWidth(10.0)),
+            Text(
+              text,
+              style: const TextStyle(
+                color: Color(UserColors.ui01),
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
               ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _keywordList.removeAt(index);
-                  });
-                },
-                child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
-              ),
-            ],
-          ),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(3.0)),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _keywordList.removeAt(index);
+                });
+              },
+              child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(7.0)),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildLocationDefaultWidget(String text) {
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
-
+  Widget _buildLocationDefaultWidget() {
     return GestureDetector(
       onTap: () async {
         getLocationInfo();
       },
-      child: Padding(
-        padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
-        child: Container(
-          height: ScreenUtil().setHeight(35.0),
-          width: ScreenUtil()
-              .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(30.0)),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
-            border: Border.all(color: const Color(UserColors.ui08)),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontFamily: "Pretendard",
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Color(UserColors.ui06),
+      child: Container(
+        height: ScreenUtil().setHeight(35.0),
+        width: ScreenUtil().setWidth(105.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
+          border: Border.all(color: const Color(UserColors.ui08)),
+        ),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ButtonIcon(
+              icon: Icons.add,
+              iconColor: const Color(UserColors.ui04),
+              callback: () {},
             ),
-          ),
+            SizedBox(width: ScreenUtil().setWidth(5.0)),
+            const Text(
+              Strings.add,
+              style: TextStyle(
+                fontFamily: "Pretendard",
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Color(UserColors.ui06),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildLocationWidget(String text) {
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
+    final textSize = _getTextWidth(
+      text: text,
+      style: const TextStyle(
+        color: Color(UserColors.ui01),
+        fontFamily: "Pretendard",
+        fontWeight: FontWeight.w500,
+        fontSize: 16,
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
@@ -327,43 +345,34 @@ class _UploadWritePageState extends State<UploadWritePage> {
       },
       child: Container(
         height: ScreenUtil().setHeight(35.0),
-        width: ScreenUtil()
-            .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(75.0)),
+        width: textSize.width + ScreenUtil().setWidth(50.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
           border: Border.all(color: const Color(UserColors.ui08)),
         ),
         alignment: Alignment.center,
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(10.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                    color: Color(UserColors.ui01),
-                    fontFamily: "Pretendard",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+        child: Row(
+          children: [
+            SizedBox(width: ScreenUtil().setWidth(10.0)),
+            Text(
+              text,
+              style: const TextStyle(
+                color: Color(UserColors.ui01),
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
               ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _uploadViewModel.setUploadLocation("");
-                  });
-                },
-                child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
-              ),
-            ],
-          ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _uploadViewModel.setUploadLocation("");
+                });
+              },
+              child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
+            ),
+          ],
         ),
       ),
     );
@@ -497,7 +506,6 @@ class _UploadWritePageState extends State<UploadWritePage> {
         showCompleteDialog();
       }
     } catch (error) {
-      print('Error updating: $error');
     } finally {
       setState(() {
         _isLoading = false;
@@ -705,12 +713,11 @@ class _UploadWritePageState extends State<UploadWritePage> {
                   fontSize: 16,
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: Colors.black),
             ],
           ),
           SizedBox(height: ScreenUtil().setHeight(12.0)),
           (_uploadViewModel.getUploadLocation.isEmpty)
-              ? _buildLocationDefaultWidget("ex) 면목동")
+              ? _buildLocationDefaultWidget()
               : _buildLocationWidget(widget.uploadData?.locationDetail ??
                   _uploadViewModel.getUploadLocation),
         ],
@@ -754,7 +761,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
             textColor: (_textController.text.isNotEmpty &&
                     _uploadViewModel.getUploadLocation.isNotEmpty)
                 ? Colors.white
-                : Colors.black,
+                : const Color(UserColors.ui06),
             callback: (widget.isEdit) ? edit : upload,
           ),
         ),
@@ -827,7 +834,7 @@ class _UploadWritePageState extends State<UploadWritePage> {
                     _buildPhotoArea(),
                     SizedBox(height: ScreenUtil().setHeight(22.0)),
                     _buildContentsWidget(),
-                    SizedBox(height: ScreenUtil().setHeight(15.0)),
+                    SizedBox(height: ScreenUtil().setHeight(49.0)),
                     _buildCategoryArea(),
                     SizedBox(height: ScreenUtil().setHeight(28.0)),
                     _buildKeywordArea(),

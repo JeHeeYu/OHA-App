@@ -23,25 +23,24 @@ class _AddKeywordDialogState extends State<AddKeywordDialog> {
   void initState() {
     super.initState();
     _uploadViewModel = Provider.of<UploadViewModel>(context, listen: false);
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
   }
 
-  TextSpan _buildTextSpan(String text) {
-    return TextSpan(
-      text: text,
-    );
-  }
-
-  TextPainter _getTextPainter(TextSpan textSpan) {
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    return textPainter;
+  static Size _getTextWidth({
+    required String text,
+    required TextStyle style,
+    int? maxLines,
+    TextDirection? textDirection,
+  }) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: maxLines ?? 1,
+      textDirection: textDirection ?? TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+    return textPainter.size;
   }
 
   Widget _buildExampleWidget() {
@@ -68,8 +67,15 @@ class _AddKeywordDialogState extends State<AddKeywordDialog> {
   }
 
   Widget _buildKeywordWidget(String text, int index) {
-    final textSpan = _buildTextSpan(text);
-    final textPainter = _getTextPainter(textSpan);
+    final textSize = _getTextWidth(
+      text: text,
+      style: const TextStyle(
+        color: Color(UserColors.ui01),
+        fontFamily: "Pretendard",
+        fontWeight: FontWeight.w500,
+        fontSize: 16,
+      ),
+    );
 
     return GestureDetector(
       onTap: () {
@@ -77,43 +83,36 @@ class _AddKeywordDialogState extends State<AddKeywordDialog> {
       },
       child: Container(
         height: ScreenUtil().setHeight(35.0),
-        width: ScreenUtil()
-            .setWidth(textPainter.width * 1 + ScreenUtil().setWidth(75.0)),
+        width: textSize.width + ScreenUtil().setWidth(50.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(ScreenUtil().radius(22.0)),
           border: Border.all(color: const Color(UserColors.ui08)),
         ),
         alignment: Alignment.center,
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(10.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                    color: Color(UserColors.ui01),
-                    fontFamily: "Pretendard",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+        child: Row(
+          children: [
+            SizedBox(width: ScreenUtil().setWidth(10.0)),
+            Text(
+              text,
+              style: const TextStyle(
+                color: Color(UserColors.ui01),
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
               ),
-              GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _uploadViewModel.getKetwordList.removeAt(index);
-                    });
-                  },
-                  child:
-                      const Icon(Icons.cancel, color: Color(UserColors.ui07))),
-            ],
-          ),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(3.0)),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _uploadViewModel.getKetwordList.removeAt(index);
+                });
+              },
+              child: const Icon(Icons.cancel, color: Color(UserColors.ui07)),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(7.0)),
+          ],
         ),
       ),
     );
